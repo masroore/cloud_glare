@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
@@ -166,10 +167,13 @@ public partial class Form1 : Form
         _sessions.SetHostFromUrl(targetUrl);
         _sessions.FindSession(_currentProxy)?.SetTargetUrl(targetUrl);
 
-        _browser.LoadUrl(targetUrl);
-        _ = await _browser.WaitForInitialLoadAsync();
+        //_browser.LoadUrl(targetUrl);
+        await _browser.LoadUrlFrameAsync(targetUrl);
+        await _browser.WaitForInitialLoadAsync();
+        Thread.Sleep(1000);
 
         fetchCookies(targetUrl);
+        getUserAgent();
         populateSessionWidgets();
     }
 
@@ -243,4 +247,45 @@ public partial class Form1 : Form
         };
         options.SaveToFile("cloudglare.conf");
     }
+
+    private void btnCycleProxies_Click(object sender, EventArgs e)
+    {
+        if (_proxies.Count < 1)
+        {
+            return;
+        }
+
+        _enumerator = _proxies.GetEnumerator();
+        _currentProxy = _enumerator.Current;
+
+        updateTimerInterval();
+        timer.Enabled = true;
+    }
+
+    private void trkIntervalSeconds_Scroll(object sender, EventArgs e)
+    {
+        updateTimerInterval();
+    }
+
+    private void updateTimerInterval()
+    {
+        timer.Interval = trkIntervalSeconds.Value * 1000;
+    }
+
+    private void timer_Tick(object sender, EventArgs e)
+    {
+        getNextProxy();
+
+        if (_currentProxy == null)
+        {
+            timer.Enabled = false;
+            return;
+        }
+
+        updateProxyLabel();
+
+        createBrowser();
+
+        visitUrl();
+   }
 }

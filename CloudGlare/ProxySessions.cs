@@ -26,10 +26,8 @@ public class ProxySessions
         return session;
     }
 
-    public ProxySession? FindSession(ProxyNode proxy)
-    {
-        return Sessions.FirstOrDefault(sess => sess.ProxyId == proxy.Id);
-    }
+    public ProxySession? FindSession(ProxyNode proxy) =>
+        proxy == null ? null : Sessions.FirstOrDefault(sess => sess.ProxyId == proxy.Id);
 
     public void SaveToFile(string filename)
     {

@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.btnCycleProxies = new System.Windows.Forms.Button();
             this.btnSaveSessions = new System.Windows.Forms.Button();
             this.btnCookies = new System.Windows.Forms.Button();
             this.lvwCookies = new System.Windows.Forms.ListView();
@@ -52,9 +54,12 @@
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.trkIntervalSeconds = new System.Windows.Forms.TrackBar();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkIntervalSeconds)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer
@@ -70,6 +75,8 @@
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.Controls.Add(this.trkIntervalSeconds);
+            this.splitContainer.Panel2.Controls.Add(this.btnCycleProxies);
             this.splitContainer.Panel2.Controls.Add(this.btnSaveSessions);
             this.splitContainer.Panel2.Controls.Add(this.btnCookies);
             this.splitContainer.Panel2.Controls.Add(this.lvwCookies);
@@ -87,9 +94,22 @@
             this.splitContainer.Panel2.Controls.Add(this.btnLoadProxies);
             this.splitContainer.Panel2.Controls.Add(this.label1);
             this.splitContainer.Panel2.Controls.Add(this.txtUrl);
-            this.splitContainer.Size = new System.Drawing.Size(1153, 685);
+            this.splitContainer.Size = new System.Drawing.Size(1153, 703);
             this.splitContainer.SplitterDistance = 740;
             this.splitContainer.TabIndex = 0;
+            // 
+            // btnCycleProxies
+            // 
+            this.btnCycleProxies.Image = global::CloudGlare.Win.Properties.Resources.exchange;
+            this.btnCycleProxies.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCycleProxies.Location = new System.Drawing.Point(289, 657);
+            this.btnCycleProxies.Name = "btnCycleProxies";
+            this.btnCycleProxies.Size = new System.Drawing.Size(107, 41);
+            this.btnCycleProxies.TabIndex = 19;
+            this.btnCycleProxies.Text = "Cycle Proxies";
+            this.btnCycleProxies.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnCycleProxies.UseVisualStyleBackColor = true;
+            this.btnCycleProxies.Click += new System.EventHandler(this.btnCycleProxies_Click);
             // 
             // btnSaveSessions
             // 
@@ -97,7 +117,7 @@
             this.btnSaveSessions.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSaveSessions.Location = new System.Drawing.Point(14, 657);
             this.btnSaveSessions.Name = "btnSaveSessions";
-            this.btnSaveSessions.Size = new System.Drawing.Size(65, 23);
+            this.btnSaveSessions.Size = new System.Drawing.Size(65, 29);
             this.btnSaveSessions.TabIndex = 18;
             this.btnSaveSessions.Text = "Save";
             this.btnSaveSessions.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -112,7 +132,7 @@
             this.btnCookies.Name = "btnCookies";
             this.btnCookies.Size = new System.Drawing.Size(41, 18);
             this.btnCookies.TabIndex = 17;
-            this.btnCookies.Text = "Cookie";
+            this.btnCookies.Text = "Refresh";
             this.btnCookies.UseVisualStyleBackColor = true;
             this.btnCookies.Click += new System.EventHandler(this.btnCookies_Click);
             // 
@@ -309,11 +329,30 @@
             this.saveFileDialog.DefaultExt = "json";
             this.saveFileDialog.Filter = "JSON File|*.json|All files|*.*";
             // 
+            // trkIntervalSeconds
+            // 
+            this.trkIntervalSeconds.LargeChange = 10;
+            this.trkIntervalSeconds.Location = new System.Drawing.Point(88, 657);
+            this.trkIntervalSeconds.Maximum = 90;
+            this.trkIntervalSeconds.Minimum = 5;
+            this.trkIntervalSeconds.Name = "trkIntervalSeconds";
+            this.trkIntervalSeconds.Size = new System.Drawing.Size(182, 45);
+            this.trkIntervalSeconds.SmallChange = 5;
+            this.trkIntervalSeconds.TabIndex = 20;
+            this.trkIntervalSeconds.TickFrequency = 5;
+            this.trkIntervalSeconds.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trkIntervalSeconds.Value = 5;
+            this.trkIntervalSeconds.Scroll += new System.EventHandler(this.trkIntervalSeconds_Scroll);
+            // 
+            // timer
+            // 
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1153, 685);
+            this.ClientSize = new System.Drawing.Size(1153, 703);
             this.Controls.Add(this.splitContainer);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "Form1";
@@ -325,6 +364,7 @@
             this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trkIntervalSeconds)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -355,6 +395,9 @@
         private System.Windows.Forms.Button btnCookies;
         private System.Windows.Forms.Button btnSaveSessions;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.Button btnCycleProxies;
+        private System.Windows.Forms.TrackBar trkIntervalSeconds;
+        private System.Windows.Forms.Timer timer;
     }
 }
 

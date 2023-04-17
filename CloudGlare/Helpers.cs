@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
+using CefSharp;
 using Nager.PublicSuffix;
+using Cookie = System.Net.Cookie;
 
 namespace CloudGlare;
 
@@ -53,5 +56,56 @@ public static class Helpers
                 foreach (Cookie fc in cl) yield return fc;
             }
         }
+    }
+
+    public static Task LoadUrlAsync(this IWebBrowser browser, string url)
+    {
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        EventHandler<LoadingStateChangedEventArgs>? handler = null;
+        handler = (sender, args) =>
+        {
+            //Wait for while page to finish loading not just the first frame
+            if (!args.IsLoading)
+            {
+                browser.LoadingStateChanged -= handler;
+                //Important that the continuation runs async using TaskCreationOptions.RunContinuationsAsynchronously
+                tcs.TrySetResult(true);
+            }
+        };
+
+        browser.LoadingStateChanged += handler;
+
+        if (!string.IsNullOrEmpty(url))
+        {
+            browser.LoadUrl(url);
+        }
+
+        return tcs.Task;
+    }
+
+    public static Task LoadUrlFrameAsync(this IWebBrowser browser, string url)
+    {
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        EventHandler<FrameLoadEndEventArgs>? handler = null;
+        handler = (sender, e) =>
+        {
+            if (e.Frame.IsMain)
+            {
+                browser.FrameLoadEnd -= handler;
+                //Important that the continuation runs async using TaskCreationOptions.RunContinuationsAsynchronously
+                tcs.TrySetResult(true);
+            }
+        };
+
+        browser.FrameLoadEnd += handler;
+
+        if (!string.IsNullOrEmpty(url))
+        {
+            browser.LoadUrl(url);
+        }
+
+        return tcs.Task;
     }
 }
