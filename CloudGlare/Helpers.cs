@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Reflection;
 using Nager.PublicSuffix;
 
 namespace CloudGlare;
@@ -33,5 +36,22 @@ public static class Helpers
         var domain1 = GetDomainName(url1);
         var domain2 = GetDomainName(url2);
         return string.Compare(domain1, domain2, StringComparison.OrdinalIgnoreCase) == 0;
+    }
+
+    public static IEnumerable<Cookie> GetAllCookies(this CookieContainer c)
+    {
+        var k = (Hashtable)c.GetType().GetField("m_domainTable", BindingFlags.Instance | BindingFlags.NonPublic)
+            .GetValue(c);
+        foreach (DictionaryEntry element in k)
+        {
+            var sl = (SortedList)element.Value.GetType()
+                .GetField("m_list", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(element.Value);
+
+            foreach (var e in sl)
+            {
+                var cl = (CookieCollection)((DictionaryEntry)e).Value;
+                foreach (Cookie fc in cl) yield return fc;
+            }
+        }
     }
 }
