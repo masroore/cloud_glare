@@ -36,10 +36,7 @@ public class ProxySession
         _host = Helpers.GetDomainName(url);
     }
 
-    private bool isSameDomain(string url)
-    {
-        return string.CompareOrdinal(_host, Helpers.GetDomainName(url)) == 0;
-    }
+    private bool isSameDomain(string url) => string.CompareOrdinal(_host, Helpers.GetDomainName(url)) == 0;
 
     public string Serialize()
     {

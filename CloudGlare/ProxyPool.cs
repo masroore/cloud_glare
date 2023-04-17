@@ -6,19 +6,12 @@ namespace CloudGlare;
 
 public class ProxyPool
 {
-    private readonly List<ProxyNode> _proxies;
-
-    public ProxyPool()
-    {
-        _proxies = new List<ProxyNode>();
-    }
+    private readonly List<ProxyNode> _proxies = new();
 
     public int Count => _proxies.Count;
 
-    public ProxyNode? FindProxy(string host, int port)
-    {
-        return _proxies.FirstOrDefault(node => node.Host.Equals(host) && node.Port == port);
-    }
+    public ProxyNode? FindProxy(string host, int port) =>
+        _proxies.FirstOrDefault(node => node.Host.Equals(host) && node.Port == port);
 
     public ProxyPool Shuffle()
     {
@@ -34,13 +27,7 @@ public class ProxyPool
         return this;
     }
 
-    public IEnumerator<ProxyNode> GetEnumerator()
-    {
-        return ((IEnumerable<ProxyNode>)_proxies).GetEnumerator();
-    }
+    public IEnumerator<ProxyNode> GetEnumerator() => ((IEnumerable<ProxyNode>)_proxies).GetEnumerator();
 
-    public List<string> RawUrls()
-    {
-        return _proxies.Select(p => p.RawUrl).ToList();
-    }
+    public List<string> RawUrls() => _proxies.Select(p => p.RawUrl).ToList();
 }
