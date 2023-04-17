@@ -10,9 +10,8 @@ namespace CloudGlare;
 
 public class ProxySession
 {
-    private string _host;
-
     private readonly ProxyNode _proxy;
+    private string _host;
 
     public ProxySession(ProxyNode proxy, string host)
     {
@@ -27,8 +26,7 @@ public class ProxySession
     public string ProxyRawUrl => _proxy.RawUrl;
     public string ProxyId => _proxy.Id;
     public string UserAgent { get; set; }
-    public List<string> UrlsUnfiltered { get; } = new();
-    public List<string> UrlsFiltered { get; } = new();
+    public List<string> UrlsCaptured { get; } = new();
     public Dictionary<string, string> Cookies { get; }
     public Dictionary<string, string> Headers { get; }
 
@@ -68,10 +66,14 @@ public class ProxySession
 
     public void UpdateHeaders(IRequest request)
     {
-        UrlsUnfiltered.Add(request.Url);
-        // only allow headers for the same domain
+        // only allow headers for the same top-level domain
         if (!isSameDomain(request.Url)) return;
-        UrlsFiltered.Add(request.Url);
+
+        if (UrlsCaptured.IndexOf(request.Url) == -1)
+        {
+            UrlsCaptured.Add(request.Url);
+            UrlsCaptured.Sort();
+        }
 
         foreach (var key in request.Headers.AllKeys) Headers[key] = request.Headers[key];
 

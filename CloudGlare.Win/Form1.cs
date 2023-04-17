@@ -229,4 +229,18 @@ public partial class Form1 : Form
     {
         if (saveFileDialog.ShowDialog(this) == DialogResult.OK) _sessions.SaveToFile(saveFileDialog.FileName);
     }
+
+    private void Form1_Load(object sender, EventArgs e)
+    {
+        txtUrl.Text = Options.Get("cloudglare.conf").TargetUrl;
+    }
+
+    private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        var options = new Options
+        {
+            TargetUrl = getUrl()
+        };
+        options.SaveToFile("cloudglare.conf");
+    }
 }

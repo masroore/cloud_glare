@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.btnSaveSessions = new System.Windows.Forms.Button();
             this.btnCookies = new System.Windows.Forms.Button();
             this.lvwCookies = new System.Windows.Forms.ListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,16 +43,15 @@
             this.txtUserAgent = new System.Windows.Forms.TextBox();
             this.btnEvalUserAgent = new System.Windows.Forms.Button();
             this.lblProxy = new System.Windows.Forms.Label();
+            this.btnSwitchNextProxy = new System.Windows.Forms.Button();
             this.btnLoadUrl = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtProxies = new System.Windows.Forms.TextBox();
+            this.btnLoadProxies = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.btnSaveSessions = new System.Windows.Forms.Button();
-            this.btnSwitchNextProxy = new System.Windows.Forms.Button();
-            this.btnLoadProxies = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -90,6 +90,19 @@
             this.splitContainer.Size = new System.Drawing.Size(1153, 685);
             this.splitContainer.SplitterDistance = 740;
             this.splitContainer.TabIndex = 0;
+            // 
+            // btnSaveSessions
+            // 
+            this.btnSaveSessions.Image = global::CloudGlare.Win.Properties.Resources.save;
+            this.btnSaveSessions.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSaveSessions.Location = new System.Drawing.Point(14, 657);
+            this.btnSaveSessions.Name = "btnSaveSessions";
+            this.btnSaveSessions.Size = new System.Drawing.Size(65, 23);
+            this.btnSaveSessions.TabIndex = 18;
+            this.btnSaveSessions.Text = "Save";
+            this.btnSaveSessions.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnSaveSessions.UseVisualStyleBackColor = true;
+            this.btnSaveSessions.Click += new System.EventHandler(this.btnSaveSessions_Click);
             // 
             // btnCookies
             // 
@@ -210,6 +223,19 @@
             this.lblProxy.TabIndex = 9;
             this.lblProxy.Text = "N/A";
             // 
+            // btnSwitchNextProxy
+            // 
+            this.btnSwitchNextProxy.Image = global::CloudGlare.Win.Properties.Resources.right_arrow;
+            this.btnSwitchNextProxy.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSwitchNextProxy.Location = new System.Drawing.Point(343, 170);
+            this.btnSwitchNextProxy.Name = "btnSwitchNextProxy";
+            this.btnSwitchNextProxy.Size = new System.Drawing.Size(54, 23);
+            this.btnSwitchNextProxy.TabIndex = 6;
+            this.btnSwitchNextProxy.Text = "Next";
+            this.btnSwitchNextProxy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnSwitchNextProxy.UseVisualStyleBackColor = true;
+            this.btnSwitchNextProxy.Click += new System.EventHandler(this.btnSwitchNextProxy_Click);
+            // 
             // btnLoadUrl
             // 
             this.btnLoadUrl.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -244,6 +270,19 @@
             this.txtProxies.Size = new System.Drawing.Size(383, 113);
             this.txtProxies.TabIndex = 3;
             // 
+            // btnLoadProxies
+            // 
+            this.btnLoadProxies.Image = global::CloudGlare.Win.Properties.Resources.storage;
+            this.btnLoadProxies.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnLoadProxies.Location = new System.Drawing.Point(14, 170);
+            this.btnLoadProxies.Name = "btnLoadProxies";
+            this.btnLoadProxies.Size = new System.Drawing.Size(65, 23);
+            this.btnLoadProxies.TabIndex = 2;
+            this.btnLoadProxies.Text = "Load";
+            this.btnLoadProxies.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnLoadProxies.UseVisualStyleBackColor = true;
+            this.btnLoadProxies.Click += new System.EventHandler(this.btnLoadProxies_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -270,45 +309,6 @@
             this.saveFileDialog.DefaultExt = "json";
             this.saveFileDialog.Filter = "JSON File|*.json|All files|*.*";
             // 
-            // btnSaveSessions
-            // 
-            this.btnSaveSessions.Image = global::CloudGlare.Win.Properties.Resources.save;
-            this.btnSaveSessions.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSaveSessions.Location = new System.Drawing.Point(14, 657);
-            this.btnSaveSessions.Name = "btnSaveSessions";
-            this.btnSaveSessions.Size = new System.Drawing.Size(65, 23);
-            this.btnSaveSessions.TabIndex = 18;
-            this.btnSaveSessions.Text = "Save";
-            this.btnSaveSessions.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnSaveSessions.UseVisualStyleBackColor = true;
-            this.btnSaveSessions.Click += new System.EventHandler(this.btnSaveSessions_Click);
-            // 
-            // btnSwitchNextProxy
-            // 
-            this.btnSwitchNextProxy.Image = global::CloudGlare.Win.Properties.Resources.right_arrow;
-            this.btnSwitchNextProxy.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSwitchNextProxy.Location = new System.Drawing.Point(343, 170);
-            this.btnSwitchNextProxy.Name = "btnSwitchNextProxy";
-            this.btnSwitchNextProxy.Size = new System.Drawing.Size(54, 23);
-            this.btnSwitchNextProxy.TabIndex = 6;
-            this.btnSwitchNextProxy.Text = "Next";
-            this.btnSwitchNextProxy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnSwitchNextProxy.UseVisualStyleBackColor = true;
-            this.btnSwitchNextProxy.Click += new System.EventHandler(this.btnSwitchNextProxy_Click);
-            // 
-            // btnLoadProxies
-            // 
-            this.btnLoadProxies.Image = global::CloudGlare.Win.Properties.Resources.storage;
-            this.btnLoadProxies.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLoadProxies.Location = new System.Drawing.Point(14, 170);
-            this.btnLoadProxies.Name = "btnLoadProxies";
-            this.btnLoadProxies.Size = new System.Drawing.Size(65, 23);
-            this.btnLoadProxies.TabIndex = 2;
-            this.btnLoadProxies.Text = "Load";
-            this.btnLoadProxies.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnLoadProxies.UseVisualStyleBackColor = true;
-            this.btnLoadProxies.Click += new System.EventHandler(this.btnLoadProxies_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -319,6 +319,8 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CloudGlare - Win";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
