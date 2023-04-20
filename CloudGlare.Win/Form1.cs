@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
@@ -17,6 +19,9 @@ public partial class Form1 : Form
     private readonly BrowserRequestHandler _requestHandler;
     private readonly ProxySessions _sessions;
     private string _userAgent;
+    private string _saveDirectory = string.Empty;
+    private bool _visitingCustomUrls = false;
+    private List<string> _customUrls = new();
 
     public Form1()
     {
@@ -76,12 +81,13 @@ public partial class Form1 : Form
 
     private IRequestContext getContext()
     {
-        if (_currentProxy == null) getNextProxy();
+        if (!_visitingCustomUrls && _currentProxy == null)
+            getNextProxy();
 
         var builder = RequestContext
             .Configure();
 
-        if (_currentProxy != null)
+        if (!_visitingCustomUrls && _currentProxy != null)
             builder = builder
                 .WithProxyServer(_currentProxy.Host, _currentProxy.Port)
                 .WithCachePath(Path.Combine(
@@ -164,17 +170,42 @@ public partial class Form1 : Form
     private async void visitUrl(string? url = null)
     {
         var targetUrl = url ?? getUrl();
-        _sessions.SetHostFromUrl(targetUrl);
-        _sessions.FindSession(_currentProxy)?.SetTargetUrl(targetUrl);
+
+        if (!_visitingCustomUrls)
+        {
+            _sessions.SetHostFromUrl(targetUrl);
+            _sessions.FindSession(_currentProxy)?.SetTargetUrl(targetUrl);
+        }
 
         //_browser.LoadUrl(targetUrl);
         await _browser.LoadUrlFrameAsync(targetUrl);
         await _browser.WaitForInitialLoadAsync();
         Thread.Sleep(1000);
 
-        fetchCookies(targetUrl);
-        getUserAgent();
-        populateSessionWidgets();
+        if (!_visitingCustomUrls)
+        {
+            fetchCookies(targetUrl);
+            getUserAgent();
+            populateSessionWidgets();
+        }
+        else
+        {
+            await saveBrowserSource(url);
+        }
+    }
+
+    private async Task saveBrowserSource(string url)
+    {
+        if (!string.IsNullOrEmpty(_saveDirectory) && chkAutoSavePage.Checked)
+        {
+            var uri = new Uri(url);
+            var filename = DateTime.Now.ToString("yy-MM-dd_hh-mm-ss_") + uri.Segments.Last().Slugify();
+            filename = Path.ChangeExtension(filename, ".html");
+            filename = Path.Combine(_saveDirectory, filename);
+
+            var source = await _browser.GetSourceAsync();
+            File.WriteAllText(filename, source);
+        }
     }
 
     private async void fetchCookies(string? targetUrl = null)
@@ -250,10 +281,7 @@ public partial class Form1 : Form
 
     private void btnCycleProxies_Click(object sender, EventArgs e)
     {
-        if (_proxies.Count < 1)
-        {
-            return;
-        }
+        if (_proxies.Count < 1) return;
 
         _enumerator = _proxies.GetEnumerator();
         _currentProxy = _enumerator.Current;
@@ -274,6 +302,19 @@ public partial class Form1 : Form
 
     private void timer_Tick(object sender, EventArgs e)
     {
+        if (_visitingCustomUrls)
+        {
+            var url = getCustomUrl();
+            if (string.IsNullOrEmpty(url))
+            {
+                timer.Enabled = false;
+                return;
+            }
+
+            visitUrl(url);
+            return;
+        }
+
         getNextProxy();
 
         if (_currentProxy == null)
@@ -287,5 +328,31 @@ public partial class Form1 : Form
         createBrowser();
 
         visitUrl();
-   }
+    }
+
+    private string? getCustomUrl() => _customUrls.Pop();
+
+    private void trkUrlsInterval_Scroll(object sender, EventArgs e) =>
+        lblUrlInterval.Text = $"Interval: {trkUrlsInterval.Value} secs";
+
+    private void btnLoadAllUrls_Click(object sender, EventArgs e)
+    {
+        if (chkAutoSavePage.Checked)
+        {
+            _saveDirectory = string.Empty;
+            if (folderBrowserDialog.ShowDialog(this) == DialogResult.OK)
+                _saveDirectory = folderBrowserDialog.SelectedPath;
+
+            chkAutoSavePage.Checked = !string.IsNullOrEmpty(_saveDirectory);
+        }
+
+        _customUrls.Clear();
+        _customUrls.AddRange(txtUrls.Lines.Where(s => !string.IsNullOrEmpty(s)).ToList());
+
+        createBrowser();
+
+        _visitingCustomUrls = true;
+        updateTimerInterval();
+        timer.Enabled = true;
+    }
 }

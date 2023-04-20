@@ -64,24 +64,21 @@ public class BrowserRequestHandler : RequestHandler
     protected override bool GetAuthCredentials(IWebBrowser chromiumWebBrowser, IBrowser browser, string originUrl,
         bool isProxy, string host, int port, string realm, string scheme, IAuthCallback callback)
     {
-        if (isProxy)
+        if (!isProxy || _pool.Count <= 0) return false;
+        
+        var proxy = _pool.FindProxy(host, port);
+        if (proxy == null)
+            return false;
+
+        Task.Run(() =>
         {
-            var proxy = _pool.FindProxy(host, port);
-            if (proxy == null)
-                return false;
-
-            Task.Run(() =>
+            using (callback)
             {
-                using (callback)
-                {
-                    callback.Continue(proxy.Username, proxy.Password);
-                }
-            });
+                callback.Continue(proxy.Username, proxy.Password);
+            }
+        });
 
 
-            return true;
-        }
-
-        return false;
+        return true;
     }
 }

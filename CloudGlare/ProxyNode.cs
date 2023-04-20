@@ -11,7 +11,7 @@ public class ProxyNode
     public string Scheme { get; private set; } = "http";
     public string FullyQualifiedUrl => $"{Scheme}://{RawUrl}";
     public string RawUrl => $"{Username}:{Password}@{Host}:{Port}";
-    public string Id => $"{Host.Replace('.', ' ')} {Port}".GenerateSlug();
+    public string Id => $"{Host.Replace('.', ' ')} {Port}".Slugify();
     public string CefCompatibleUrl => $"{Scheme}://{Host}:{Port}";
 
     public static ProxyNode ParseLine(string s)
